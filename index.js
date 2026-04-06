@@ -111,9 +111,14 @@ plugin.onLoad(async () => {
     const backgroundDom = document.querySelector(".BGEnhanced-BackgoundDom");
     let animationFrameRequest = null;
     let animationFrameRequested = false;
+    //确定鼠标位置
+    let pointX = null;
+    let pointY = null;
 
     // 指针移动
     document.addEventListener("pointermove", event => {
+        pointX = event.clientX;
+        pointY = event.clientY;
         if (!animationFrameRequested) {
             animationFrameRequested = true;
             animationFrameRequest = requestAnimationFrame(() => {
@@ -151,12 +156,14 @@ plugin.onLoad(async () => {
         "mousedown", "mouseup", "wheel", "auxclick",
         // 新增：键盘事件（检测输入文字、按键）
         "keydown", "keyup"];
-
+        
     // 无操作一段时间   
     idleEvents.forEach(eventName => {
         document.addEventListener(eventName, () => {
             if(pluginConfig.get("pointerIdle")["enabled"])
             startTimer(pluginConfig.get("pointerIdle")["time"], () => {
+            cancelAnimationFrame(animationFrameRequest);
+            animationFrameRequested = false;
             // 读取配置
             const transitionDelay = pluginConfig.get("pointerIdle")["transitionDelay"];
             const transformScale = pluginConfig.get("pointerIdle")["transformScale"];
@@ -181,6 +188,9 @@ plugin.onLoad(async () => {
     // 有操作时
     idleEvents.forEach(eventName => {if(eventName != "pointermove")
         document.addEventListener(eventName, () =>{
+        if (!animationFrameRequested) {
+            animationFrameRequested = true;
+            animationFrameRequest = requestAnimationFrame(() => {
             // 读取配置
             const transitionDelay = pluginConfig.get("pointermove")["transitionDelay"];
             const transformScale = pluginConfig.get("pointermove")["transformScale"];
@@ -190,15 +200,30 @@ plugin.onLoad(async () => {
             // 更改属性
             backgroundDom.style.setProperty("--transitionDelay", `${transitionDelay}ms`);
             backgroundDom.style.setProperty("--transformScale", `${transformScale}%`);
+            // 跟随指针
+            const followPointerSwitch = pluginConfig.get("pointermove")["followPointerSwitch"];
+            if (followPointerSwitch&& pointX != null && pointY != null) {
+                let translateX = window.innerWidth / 2 - pointX;
+                let translateY = window.innerHeight / 2 - pointY;
+                translateX = translateX - translateX / (transformScale / 100);
+                translateY = translateY - translateY / (transformScale / 100);
+                backgroundDom.style.setProperty("--translateX", `${translateX}px`);
+                backgroundDom.style.setProperty("--translateY", `${translateY}px`);
+            }
             // 画面更改
             backgroundDom.style.setProperty("--filterBlur", `${filterBlur}px`);
             backgroundDom.style.setProperty("--filterBrightness", `${filterBrightness}%`);
             backgroundDom.style.setProperty("--filterSaturate", `${filterSaturate}%`);
-        })
+            animationFrameRequested = false;
+            });
+        }
+    })
     });
 
     // 指针离开
     document.addEventListener("pointerleave", () => {
+        pointX = null;
+        pointY = null;
         cancelAnimationFrame(animationFrameRequest);
         animationFrameRequested = false;
         // 清除计时器
