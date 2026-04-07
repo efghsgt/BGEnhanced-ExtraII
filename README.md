@@ -35,7 +35,7 @@
 ## 效果图  
 
   
-![preview](preview.gif)  
+![preview](preview.webp)  
   
   ## 配置图
 ![preview](https://github.com/efghsgt/BGEnhanced-ExtraII/blob/main/preview.png)
