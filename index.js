@@ -188,7 +188,7 @@ plugin.onLoad(async () => {
     // 有操作时
     idleEvents.forEach(eventName => {if(eventName != "pointermove")
         document.addEventListener(eventName, () =>{
-        if (!animationFrameRequested) {
+        if (!animationFrameRequested && pluginConfig.get("pointerIdle")["enabled"]) {
             animationFrameRequested = true;
             animationFrameRequest = requestAnimationFrame(() => {
             // 读取配置
