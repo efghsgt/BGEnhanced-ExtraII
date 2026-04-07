@@ -387,6 +387,8 @@ function initConfigView(configView) {
             config["filterSaturate"] = filterSaturate.value;
             pluginConfig.set("pointermove", config);
             if(!followPointerSwitch.checked){
+                pointX = null;
+                pointY = null;
                 // 读取配置
                 const transitionDelay = pluginConfig.get("pointermove")["transitionDelay"];
                 const transformScale = pluginConfig.get("pointermove")["transformScale"];
@@ -414,6 +416,8 @@ function initConfigView(configView) {
             filterSaturate.value = defaultConfig["pointermove"]["filterSaturate"];
             pluginConfig.set("pointermove", undefined);
             if(!followPointerSwitch.checked){
+                pointX = null;
+                pointY = null;
                 // 读取配置
                 const transitionDelay = pluginConfig.get("pointermove")["transitionDelay"];
                 const transformScale = pluginConfig.get("pointermove")["transformScale"];
