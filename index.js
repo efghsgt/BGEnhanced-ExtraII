@@ -102,7 +102,8 @@ function injectCSSStyles() {
     }`;
     document.head.appendChild(element);
 }
-
+let pointX = null;
+let pointY = null;
 
 plugin.onLoad(async () => {
     checkPluginExistence();
@@ -112,8 +113,7 @@ plugin.onLoad(async () => {
     let animationFrameRequest = null;
     let animationFrameRequested = false;
     //确定鼠标位置
-    let pointX = null;
-    let pointY = null;
+
 
     // 指针移动
     document.addEventListener("pointermove", event => {
