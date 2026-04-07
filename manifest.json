@@ -16,7 +16,7 @@
         "BGEnhanced"
     ],
     "type": "extension",
-    "preview": "preview.webp",
+    "preview": "preview.PNG",
     "injects": {
         "Main": [ 
             {
